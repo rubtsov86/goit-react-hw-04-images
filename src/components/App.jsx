@@ -65,7 +65,7 @@ function App() {
     };
 
     updateImages(response);
-  }, [inputValue, page, images, showLoadMore]);
+  }, [inputValue, page]);
 
   const onSubmit = inputValueData => {
     if (inputValueData === '') {
