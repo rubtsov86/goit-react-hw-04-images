@@ -6,6 +6,7 @@ import axios from 'axios';
 import '../styles.css';
 import Loader from './Loader';
 import Modal from './Modal';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const [images, setImages] = useState([]);
@@ -20,10 +21,10 @@ function App() {
     if (!inputValue) {
       return;
     }
-
+    setLoading(true);
     const fetchImages = () => {
       if (inputValue === '') {
-        return alert('nothing to show, fill input');
+        return;
       }
       axios.defaults.baseURL = `https://pixabay.com/api/?q=${inputValue}&page=${page}&per_page=12&key=26229759-3aa7093be117df00e52b30f1f&image_type=photo&orientation=horizontal`;
       const response = axios.get('/search?query=react');
@@ -39,7 +40,10 @@ function App() {
         return;
       }
       if (response.data.hits.length === 0) {
-        alert('no images found, try something else');
+        toast.error('no images found, try something else', {
+          duration: 1500,
+          position: 'top-right',
+        });
         setInputValue('');
         setLoading(false);
         return;
@@ -62,7 +66,10 @@ function App() {
 
   const onSubmit = inputValueData => {
     if (inputValueData === '') {
-      alert('nothing to show, fill input');
+      toast.error('nothing to show, fill input', {
+        duration: 1500,
+        position: 'top-right',
+      });
     }
     if (showLoadMore) {
       setShowLoadMore(false);
@@ -100,6 +107,7 @@ function App() {
         <Button onClick={onClickLoadMore} />
       )}
       {showModal && <Modal image={showModal} onClick={onClickModal} />}
+      <Toaster />
     </div>
   );
 }
