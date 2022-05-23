@@ -14,12 +14,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(false);
   const [showModal, setShowModal] = useState('');
+  const [totalHits, setTotalHits] = useState(0);
 
   useEffect(() => {
     if (!inputValue) {
       return;
     }
-    setLoading(true);
 
     const fetchImages = () => {
       if (inputValue === '') {
@@ -51,21 +51,14 @@ function App() {
         }
       );
 
-      const totalImages = images.length + newArrayOfImages.length;
       setImages(prevState => [...prevState, ...newArrayOfImages]);
       setLoading(false);
-
-      if (!showLoadMore && totalImages !== response.data.totalHits) {
-        setShowLoadMore(true);
-      }
-
-      if (totalImages === response.data.totalHits) {
-        setShowLoadMore(false);
-      }
+      setShowLoadMore(true);
+      setTotalHits(response.data.totalHits);
     };
 
     updateImages(response);
-  }, [inputValue, page]);
+  }, [page, inputValue]);
 
   const onSubmit = inputValueData => {
     if (inputValueData === '') {
@@ -103,7 +96,9 @@ function App() {
 
       <ImageGallery images={images} onClick={onClickImage} />
       {loading && <Loader />}
-      {showLoadMore && <Button onClick={onClickLoadMore} />}
+      {showLoadMore && images.length !== totalHits && (
+        <Button onClick={onClickLoadMore} />
+      )}
       {showModal && <Modal image={showModal} onClick={onClickModal} />}
     </div>
   );
